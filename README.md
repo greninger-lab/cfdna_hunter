@@ -18,8 +18,7 @@ Install [`Docker`](https://docs.docker.com/engine/installation/)
         -r main                                           # required (use the github main branch)
 
 #### Input sample csv format (note: the pairing of "sample" and "reference" must be unique):
----------
-   sample,fastq_1,fastq_2,reference
-   SRR1024623,/Users/jfurlong/dev/cfDNA/SRR1024623_R1.fastq.gz,/Users/jfurlong/dev/cfDNA/SRR1024623_R2.fastq.gz,FR751470
----------
+     sample,fastq_1,fastq_2,reference
+     SRR1024623,/path/to/fastqs/SRR1024623_R1.fastq.gz,/path/to/fastqs/SRR1024623_R2.fastq.gz,FR751470
+
 
