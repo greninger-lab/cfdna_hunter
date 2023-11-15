@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest an idea for the nf-core/cfdnahunter pipeline
+description: Suggest an idea for the cfdnahunter pipeline
 labels: enhancement
 body:
   - type: textarea

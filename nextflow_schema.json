@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/cfdnahunter/master/nextflow_schema.json",
-    "title": "nf-core/cfdnahunter pipeline parameters",
+    "$id": "",
+    "title": "cfdnahunter pipeline parameters",
     "description": "A pipeline to search cfDNA for a list of bowtie2 indexed references. ",
     "type": "object",
     "definitions": {
@@ -281,7 +281,21 @@
                     "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
                 }
             }
-        }
+        },
+        "indexes": {
+            "title": "bowtie2 indexes",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "index_path": {
+                    "type": "string"
+                },
+                "reference_index": {
+                    "type": "string"
+                }
+            }
+        }       
     },
     "allOf": [
         {

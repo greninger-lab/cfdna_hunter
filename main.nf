@@ -1,13 +1,5 @@
 #!/usr/bin/env nextflow
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/cfdnahunter
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/cfdnahunter
-    Website: https://nf-co.re/cfdnahunter
-    Slack  : https://nfcore.slack.com/channels/cfdnahunter
-----------------------------------------------------------------------------------------
-*/
+
 
 nextflow.enable.dsl = 2
 
@@ -52,9 +44,9 @@ WorkflowMain.initialise(workflow, params, log)
 include { CFDNAHUNTER } from './workflows/cfdnahunter'
 
 //
-// WORKFLOW: Run main nf-core/cfdnahunter analysis pipeline
+// WORKFLOW: Run main cfdnahunter analysis pipeline
 //
-workflow NFCORE_CFDNAHUNTER {
+workflow CFDNA {
     CFDNAHUNTER ()
 }
 
@@ -69,7 +61,7 @@ workflow NFCORE_CFDNAHUNTER {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    NFCORE_CFDNAHUNTER ()
+    CFDNA()
 }
 
 /*

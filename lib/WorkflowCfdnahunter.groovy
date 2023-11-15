@@ -1,5 +1,5 @@
 //
-// This file holds several functions specific to the workflow/cfdnahunter.nf in the nf-core/cfdnahunter pipeline
+// This file holds several functions specific to the workflow/cfdnahunter.nf in the cfdnahunter pipeline
 //
 
 import nextflow.Nextflow
@@ -15,8 +15,8 @@ class WorkflowCfdnahunter {
         genomeExistsError(params, log)
 
 
-        if (!params.fasta) {
-            Nextflow.error "Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file."
+        if (!params.index_path) {
+            Nextflow.error "Reference bowtie2 index path not specified with e.g. '--index_path /path/to/bowtie2/reference' or via a detectable config file."
         }
     }
 

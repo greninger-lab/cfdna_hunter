@@ -36,6 +36,9 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { TRIM_READS } from '../modules/local/trim_reads'
+include { ALIGN_SAMPLES } from '../modules/local/align_samples'
+include { PROCESS_BAMS } from '../modules/local/process_bams'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,32 +85,45 @@ workflow CFDNAHUNTER {
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    TRIM_READS (
+        INPUT_CHECK.out.reads
     )
+
+    ALIGN_SAMPLES (
+        TRIM_READS.out.trimmed_reads,
+        params.index_path
+    )
+
+    PROCESS_BAMS (
+        ALIGN_SAMPLES.out.sams
+    )
+
+    // CUSTOM_DUMPSOFTWAREVERSIONS (
+    //     ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    // )
 
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowCfdnahunter.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
+    // workflow_summary    = WorkflowCfdnahunter.paramsSummaryMultiqc(workflow, summary_params)
+    // ch_workflow_summary = Channel.value(workflow_summary)
 
-    methods_description    = WorkflowCfdnahunter.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
-    ch_methods_description = Channel.value(methods_description)
+    // methods_description    = WorkflowCfdnahunter.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
+    // ch_methods_description = Channel.value(methods_description)
 
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    // ch_multiqc_files = Channel.empty()
+    // ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    // ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+    // ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    // ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
-    )
-    multiqc_report = MULTIQC.out.report.toList()
+    // MULTIQC (
+    //     ch_multiqc_files.collect(),
+    //     ch_multiqc_config.toList(),
+    //     ch_multiqc_custom_config.toList(),
+    //     ch_multiqc_logo.toList()
+    // )
+    // multiqc_report = MULTIQC.out.report.toList()
 }
 
 /*

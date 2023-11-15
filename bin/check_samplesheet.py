@@ -34,6 +34,7 @@ class RowChecker:
         sample_col="sample",
         first_col="fastq_1",
         second_col="fastq_2",
+        reference_col="reference",
         single_col="single_end",
         **kwargs,
     ):
@@ -57,6 +58,7 @@ class RowChecker:
         self._first_col = first_col
         self._second_col = second_col
         self._single_col = single_col
+        self._reference_col = reference_col
         self._seen = set()
         self.modified = []
 
@@ -73,7 +75,8 @@ class RowChecker:
         self._validate_first(row)
         self._validate_second(row)
         self._validate_pair(row)
-        self._seen.add((row[self._sample_col], row[self._first_col]))
+        self._validate_reference(row)
+        self._seen.add((row[self._sample_col], row[self._first_col], row[self._reference_col]))
         self.modified.append(row)
 
     def _validate_sample(self, row):
@@ -105,6 +108,11 @@ class RowChecker:
         else:
             row[self._single_col] = True
 
+    def _validate_reference(self, row):
+        """Assert that the reference name exists."""
+        if len(row[self._reference_col]) <= 0:
+            raise AssertionError("Reference input is required.")
+
     def _validate_fastq_format(self, filename):
         """Assert that a given filename has one of the expected FASTQ extensions."""
         if not any(filename.endswith(extension) for extension in self.VALID_FORMATS):
@@ -122,14 +130,14 @@ class RowChecker:
 
         """
         if len(self._seen) != len(self.modified):
-            raise AssertionError("The pair of sample name and FASTQ must be unique.")
+            raise AssertionError("The pair of sample name and reference must be unique.")
         seen = Counter()
         for row in self.modified:
             sample = row[self._sample_col]
-            seen[sample] += 1
-            row[self._sample_col] = f"{sample}_T{seen[sample]}"
-
-
+            reference = row[self._reference_col]
+            row[self._sample_col] = f"{sample}_{reference}"
+            seen[f"{sample}_{reference}"] += 1
+            
 def read_head(handle, num_lines=10):
     """Read the specified number of lines from the current position in the file."""
     lines = []
@@ -188,7 +196,7 @@ def check_samplesheet(file_in, file_out):
         https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
 
     """
-    required_columns = {"sample", "fastq_1", "fastq_2"}
+    required_columns = {"sample", "fastq_1", "fastq_2", "reference"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))

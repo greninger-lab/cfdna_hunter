@@ -1,8 +1,8 @@
 {
-    "name": "nf-core/cfdnahunter",
-    "homePage": "https://github.com/nf-core/cfdnahunter",
+    "name": "cfdnahunter",
+    "homePage": "https://github.com/cfdnahunter",
     "repos": {
-        "https://github.com/nf-core/modules.git": {
+        "https://github.com/modules.git": {
             "modules": {
                 "nf-core": {
                     "custom/dumpsoftwareversions": {
