@@ -1,6 +1,6 @@
 process ALIGN_SAMPLES {
     container "docker.io/biocontainers/bowtie2:v2.4.1_cv1"
-    label 'process_medium'
+    label 'process_high'
 
     input:
         tuple val(meta), path(reads), path(summary)

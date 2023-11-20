@@ -36,6 +36,7 @@ class RowChecker:
         second_col="fastq_2",
         reference_col="reference",
         single_col="single_end",
+        name_col="sample_name",
         **kwargs,
     ):
         """
@@ -59,6 +60,7 @@ class RowChecker:
         self._second_col = second_col
         self._single_col = single_col
         self._reference_col = reference_col
+        self._name_col = name_col
         self._seen = set()
         self.modified = []
 
@@ -136,6 +138,7 @@ class RowChecker:
             sample = row[self._sample_col]
             reference = row[self._reference_col]
             row[self._sample_col] = f"{sample}_{reference}"
+            row[self._name_col] = sample
             seen[f"{sample}_{reference}"] += 1
             
 def read_head(handle, num_lines=10):
@@ -216,6 +219,7 @@ def check_samplesheet(file_in, file_out):
         checker.validate_unique_samples()
     header = list(reader.fieldnames)
     header.insert(1, "single_end")
+    header.insert(2, "sample_name")
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_out.open(mode="w", newline="") as out_handle:
         writer = csv.DictWriter(out_handle, header, delimiter=",")

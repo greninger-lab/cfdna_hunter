@@ -1,13 +1,13 @@
 process PROCESS_BAMS {
     container "docker.io/jefffurlong/samtools_picard"
-    label 'process_medium'
+    label 'process_high'
 
     input:
        tuple val(meta), path(human_sam), path(reference_sam), path(summary)
     output:
-        path("*.bam") 
-        path("*final_summary.csv")
-        path("*dedup_inserts.txt")
+        tuple val(meta), path("*.bam")                , emit: bams
+        tuple val(meta), path("*final_summary.csv")   , emit: csv
+        tuple val(meta), path("*dedup_inserts.txt")   , emit: inserts
 
     script:
     """
@@ -25,6 +25,7 @@ process PROCESS_BAMS {
     dedup_bam_reads=\$(samtools flagstat ${meta.id}_deduplicated.bam | grep "mapped (" | awk '{print \$1}')
 
     samtools view -f66 ${meta.id}_deduplicated.bam | cut -f9 | awk '{print sqrt(\$0^2)}' > ${meta.id}_dedup_inserts.txt
+    samtools view -f66 ${meta.id}_human_deduplicated.bam | cut -f9 | awk '{print sqrt(\$0^2)}' > ${meta.id}_human_dedup_inserts.txt
 
     cp ${summary} ${meta.id}_final_summary.csv
     printf "\$human_bam_reads,\$human_dedup_bam_reads,\$bam_reads,\$dedup_bam_reads" >> ${meta.id}_final_summary.csv

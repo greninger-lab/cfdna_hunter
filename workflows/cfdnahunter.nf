@@ -39,6 +39,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { TRIM_READS } from '../modules/local/trim_reads'
 include { ALIGN_SAMPLES } from '../modules/local/align_samples'
 include { PROCESS_BAMS } from '../modules/local/process_bams'
+include { GENERATE_PLOTS } from '../modules/local/generate_plots'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,6 +97,11 @@ workflow CFDNAHUNTER {
 
     PROCESS_BAMS (
         ALIGN_SAMPLES.out.sams
+    )
+
+    GENERATE_PLOTS (
+        PROCESS_BAMS.out.inserts,
+        params.density
     )
 
     // CUSTOM_DUMPSOFTWAREVERSIONS (

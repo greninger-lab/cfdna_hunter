@@ -295,7 +295,18 @@
                     "type": "string"
                 }
             }
-        }       
+        },
+        "scripts": {
+            "title": "Scripts",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "density": {
+                    "type": "string"
+                }
+            }
+        }
     },
     "allOf": [
         {
