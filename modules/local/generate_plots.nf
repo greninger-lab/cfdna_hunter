@@ -7,6 +7,7 @@ process GENERATE_PLOTS {
         path(density)
     output:
         path("*.png")
+        path("*.pdf")
 
     script:
     """
