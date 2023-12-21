@@ -28,19 +28,27 @@ df <- rbind(df1, df2)
 colnames(df)[1] <- srr
 PLOT_COL <- sym(srr)
 
+
 # plot with median
 mu <- ddply(df, srr, summarise, grp.median=median(V2))
-p <- ggplot(df, aes(x=V2, fill=!!PLOT_COL))+geom_density(alpha=.25)+scale_fill_manual(values=c("blue","red"))+
+p <- ggplot(df, aes(x=V2, fill=!!PLOT_COL))+geom_density(alpha=.25)+scale_fill_manual(values=c("blue","red"), breaks=c(human_legend, ref_legend))+
   scale_x_continuous(name = 'Fragment Size, bp',limits=c(50,500),breaks = seq(50,500,50),position ='bottom')+
   scale_y_continuous(name = 'Fraction of Reads',limits=c(0,0.035))+
   theme_bw()+theme(panel.grid=element_blank())+
   geom_vline(data=mu, aes(xintercept=grp.median), color=c("blue","red"), linetype="dashed") + theme(aspect.ratio=1)
 
-
-median_png <- paste(srr_ref, "dedup_inserts", "median.png", sep="_")
+median <- paste(srr_ref, "dedup_inserts", "median.png", sep="_")
 ggsave(
-  median_png,
-  plot = p
+  median,
+  plot = p,
+  device = "png"
+)
+
+median_pdf <- paste(srr_ref, "dedup_inserts", "median.pdf", sep="_")
+ggsave(
+  median_pdf,
+  plot = p,
+  device = "pdf"
 )
 
 # plot with mode
@@ -50,15 +58,23 @@ getmode <- function(v) {
 }
 mo1 <- getmode(d1)
 mo2 <- getmode(d2)
-p <- ggplot(df, aes(x=V2, fill=!!PLOT_COL))+geom_density(alpha=.25)+scale_fill_manual(values=c("blue","red"))+
+p <- ggplot(df, aes(x=V2, fill=!!PLOT_COL))+geom_density(alpha=.25)+scale_fill_manual(values=c("blue","red"), breaks=c(human_legend, ref_legend))+
   scale_x_continuous(name = 'Fragment Size, bp',limits=c(50,500),breaks = seq(50,500,50),position ='bottom')+
   scale_y_continuous(name = 'Fraction of Reads',limits=c(0,0.035))+
   theme_bw()+theme(panel.grid=element_blank())+
   geom_vline(aes(xintercept=mo1), color="blue", linetype="dashed")+
   geom_vline(aes(xintercept=mo2), color="red", linetype="dashed") + theme(aspect.ratio=1)
 
-mode_png <- paste(srr_ref, "dedup_inserts", "mode.png", sep="_")
+mode <- paste(srr_ref, "dedup_inserts", "mode.png", sep="_")
 ggsave(
-  mode_png,
-  plot = p
+  mode,
+  plot = p,
+  device = "png"
+)
+
+mode_pdf <- paste(srr_ref, "dedup_inserts", "mode.pdf", sep="_")
+ggsave(
+  mode_pdf,
+  plot = p,
+  device = "pdf"
 )
